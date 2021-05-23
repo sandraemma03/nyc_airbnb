@@ -15,21 +15,42 @@ logger = logging.getLogger()
 
 
 def go(args):
-
     run = wandb.init(job_type="download_file")
     run.config.update(args)
 
     # We stream the file so that it can be downloaded even if it is bigger
     # than the available memory
+    artifact = wandb.Artifact(
+        args.artifact_name,
+        type=args.artifact_type,
+        description=args.artifact_description,
+    )
+    artifact.add_file(os.path.join("data", args.sample))
+
+     # than the available memory
     logger.info(f"Returning sample {args.sample}")
     logger.info(f"Uploading {args.artifact_name} to Weights & Biases")
-    log_artifact(
-        args.artifact_name,
-        args.artifact_type,
-        args.artifact_description,
-        os.path.join("data", args.sample),
-        run,
-    )
+    
+    run.log_artifact(artifact)
+
+
+
+# def go(args):
+
+#     run = wandb.init(job_type="download_file")
+#     run.config.update(args)
+
+#     # We stream the file so that it can be downloaded even if it is bigger
+#     # than the available memory
+#     logger.info(f"Returning sample {args.sample}")
+#     logger.info(f"Uploading {args.artifact_name} to Weights & Biases")
+#     log_artifact(
+#         args.artifact_name,
+#         args.artifact_type,
+#         args.artifact_description,
+#         os.path.join("data", args.sample),
+#         run,
+#     )
 
 
 if __name__ == "__main__":
