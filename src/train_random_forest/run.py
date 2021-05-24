@@ -17,6 +17,8 @@ import wandb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.pipeline import Pipeline
+import tempfile
+
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")

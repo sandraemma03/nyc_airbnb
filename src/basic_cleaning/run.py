@@ -8,6 +8,7 @@ import wandb
 import pandas as pd
 
 
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
 
@@ -52,6 +53,9 @@ def go(args):
     # DO NOT use empty strings here
     df['name'].fillna('-', inplace=True)
     df['host_name'].fillna('-', inplace=True)
+
+    # idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
+    # df = df[idx]
 
 
     logger.info("Save the results to a CSV")
