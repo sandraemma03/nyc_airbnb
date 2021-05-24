@@ -74,7 +74,13 @@ def go(args):
     # Use run.use_artifact(...).file() to get the train and validation artifacts (args.train and args.val)
     # and store the returned path in the "train_local_path" and "val_local_path" variables
 
-    # HERE
+    # Here
+
+    logger.info(f"Fetching {args.train} from W&B...")
+    train_local_path = run.use_artifact(args.train).file()
+
+    logger.info(f"Fetching {args.val} from W&B...")
+    val_local_path = run.use_artifact(args.val).file()
 
     ##################
 
@@ -98,7 +104,11 @@ def go(args):
 
     # HERE
 
+    sk_pipe = Pipeline([('preprocessing', Preprocessing()), ('random_forest', RandomForestRegressor(**rf_config))])
+
     # Then fit it to the X_train, y_train data
+
+    sk_pipe.fit(X_train, y_train)
 
     ##################
 
@@ -125,6 +135,13 @@ def go(args):
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
 
     # HERE
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        export_path = os.path.join(tmp_dir, args.output_artifact)
+        mlflow.sklearn.save_model(
+            sk_pipe,
+            export_path
+    )
 
     ##################
 
