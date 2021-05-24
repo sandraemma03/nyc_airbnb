@@ -54,8 +54,8 @@ def go(args):
     df['name'].fillna('-', inplace=True)
     df['host_name'].fillna('-', inplace=True)
 
-    # idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
-    # df = df[idx]
+    idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
+    df = df[idx]
 
 
     logger.info("Save the results to a CSV")
