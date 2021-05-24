@@ -62,9 +62,9 @@ def go(args):
          args.output_name,
          type=args.output_type,
          description=args.output_description,
-     )
-     artifact.add_file("clean_sample.csv")
-     run.log_artifact(artifact)
+    )
+    artifact.add_file("clean_sample.csv")
+    run.log_artifact(artifact)
 
 
 if __name__ == "__main__":
