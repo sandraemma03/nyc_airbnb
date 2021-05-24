@@ -32,25 +32,25 @@ def go(args):
 
     # df['price'].describe(percentiles=[0.01, 0.05, 0.50, 0.95, 0.99])
 
-     # Drop outliers
-     min_price = args.min_price
-     max_price = args.max_price
-     idx = df['price'].between(min_price, max_price)
-     df = df[idx]
+    # Drop outliers
+    min_price = args.min_price
+    max_price = args.max_price
+    idx = df['price'].between(min_price, max_price)
+    df = df[idx]
 
-     # Convert last_review to datetime
-     df['last_review'] = pd.to_datetime(df['last_review'])
+    # Convert last_review to datetime
+    df['last_review'] = pd.to_datetime(df['last_review'])
 
-     # Fill the null dates with an old date
-     df['last_review'].fillna(pd.to_datetime("2010-01-01"), inplace=True)
+    # Fill the null dates with an old date
+    df['last_review'].fillna(pd.to_datetime("2010-01-01"), inplace=True)
 
-     # If the reviews_per_month is nan it means that there is no review
-     df['reviews_per_month'].fillna(0, inplace=True)
+    # If the reviews_per_month is nan it means that there is no review
+    df['reviews_per_month'].fillna(0, inplace=True)
 
-     # We can fill the names with a short string.
-     # DO NOT use empty strings here
-     df['name'].fillna('-', inplace=True)
-     df['host_name'].fillna('-', inplace=True)
+    # We can fill the names with a short string.
+    # DO NOT use empty strings here
+    df['name'].fillna('-', inplace=True)
+    df['host_name'].fillna('-', inplace=True)
 
 
     logger.info("Save the results to a CSV")
