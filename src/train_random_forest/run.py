@@ -139,10 +139,10 @@ def go(args):
     # HERE
 
     with tempfile.TemporaryDirectory() as tmp_dir:
-        random_forest_dir = os.path.join(tmp_dir, args.output_artifact)
+        export_path = os.path.join(tmp_dir, args.output_artifact)
         mlflow.sklearn.save_model(
             sk_pipe,
-            random_forest_dir
+            export_path
     )
 
      # with tempfile.TemporaryDirectory() as temp_dir:
@@ -166,7 +166,7 @@ def go(args):
         description="Export of the RandomForest in the MLFlow sklearn format",
         metadata=rf_config,
     )
-    artifact.add_dir(random_forest_dir)
+    artifact.add_dir(args.output_artifact + '/')
     wandb.log_artifact(artifact)
 
     logger.info("Uploading plots to W&B")
