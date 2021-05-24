@@ -5,13 +5,14 @@ Download from W&B the raw dataset and apply some basic data cleaning, exporting 
 import argparse
 import logging
 import wandb
-import pandas as pd
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
 
 
 def go(args):
+
     run = wandb.init(job_type="basic_cleaning")
     run.config.update(args)
 
@@ -28,91 +29,91 @@ def go(args):
     logger.info("Reading with pandas")
     df = pd.read_csv(artifact_local_path)
 
-    # start data cleansing
-    # Drop outliers
-    logger.info("Filter prices ")
-    min_price = args.min_price
-    max_price = args.max_price
-    idx = df['price'].between(min_price, max_price)
-    df = df[idx]
 
-    # Convert last_review to datetime
-    logger.info("Convert last_review to datetime and fill na ")
-    df['last_review'] = pd.to_datetime(df['last_review'])
+    # df['price'].describe(percentiles=[0.01, 0.05, 0.50, 0.95, 0.99])
 
-    # Fill the null dates with an old date
-    df['last_review'].fillna(pd.to_datetime("2010-01-01"), inplace=True)
+     # Drop outliers
+     min_price = args.min_price
+     max_price = args.max_price
+     idx = df['price'].between(min_price, max_price)
+     df = df[idx]
 
-    # If the reviews_per_month is nan it means that there is no review
-    df['reviews_per_month'].fillna(0, inplace=True)
+     # Convert last_review to datetime
+     df['last_review'] = pd.to_datetime(df['last_review'])
 
-    # We can fill the names with a short string.
-    # DO NOT use empty strings here
-    df['name'].fillna('-', inplace=True)
-    df['host_name'].fillna('-', inplace=True)
+     # Fill the null dates with an old date
+     df['last_review'].fillna(pd.to_datetime("2010-01-01"), inplace=True)
 
-    # add filter for NYC
-    logger.info("Filter for NYC based on coordinates")
-    idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
-    df = df[idx]
+     # If the reviews_per_month is nan it means that there is no review
+     df['reviews_per_month'].fillna(0, inplace=True)
 
-    logger.info("Save Dataframe locally ")
+     # We can fill the names with a short string.
+     # DO NOT use empty strings here
+     df['name'].fillna('-', inplace=True)
+     df['host_name'].fillna('-', inplace=True)
+
+
+    logger.info("Save the results to a CSV")
     df.to_csv("clean_sample.csv", index=False)
 
-    logger.info("Upload cleaned file")
+    logger.info("Uploading the cleaned file to W&B")
+    
     artifact = wandb.Artifact(
-        args.output_name,
-        type=args.output_type,
-        description=args.output_description,
-    )
-    artifact.add_file("clean_sample.csv")
-    run.log_artifact(artifact)
+         args.output_name,
+         type=args.output_type,
+         description=args.output_description,
+     )
+     artifact.add_file("clean_sample.csv")
+     run.log_artifact(artifact)
 
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description="A very basic data cleaning")
 
+
     parser.add_argument(
-        "--input_artifact",
+        "--input_artifact", 
         type=str,
-        help="input_artifact: dataset from wandb",
+        help="Fully-qualified name for the input artifact",
         required=True
     )
 
     parser.add_argument(
-        "--output_name",
+        "--output_name", 
         type=str,
-        help="file name of the output artifact",
+        help="Name of the output artifact",
         required=True
     )
 
     parser.add_argument(
-        "--output_type",
+        "--output_type", 
         type=str,
-        help="Define the type of the output artifact.",
+        help="Artifact type",
         required=True
     )
 
     parser.add_argument(
-        "--output_description",
+        "--output_description", 
         type=str,
-        help="Detailed description of the new generated artifact",
+        help="Description of output artifact",
         required=True
     )
 
     parser.add_argument(
-        "--min_price",
+        "--min_price", 
         type=float,
-        help="Minimum price to consider as valid data point",
+        help="Minimum price",
         required=True
     )
 
     parser.add_argument(
-        "--max_price",
+        "--max_price", 
         type=float,
-        help="Maximum price to consider as valid data point",
+        help="Maximum price",
         required=True
     )
+
 
     args = parser.parse_args()
 
