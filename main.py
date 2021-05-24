@@ -117,17 +117,17 @@ def go(config: DictConfig):
             # Implement here #
             ##################
 
-            # _ = mlflow.run(
-            #     os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
-            #     "main",
-            #     parameters={
-            #         "train": "train_data.csv:latest",
-            #         "val": "val_data.csv:latest",
-            #         "rf_config": rf_config,
-            #         "output_artifact": "random_forest_export"
-            #     },
-            # )
-            pass
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
+                "main",
+                parameters={
+                    "train": "train_data.csv:latest",
+                    "val": "val_data.csv:latest",
+                    "rf_config": rf_config,
+                    "output_artifact": "random_forest_export"
+                },
+            )
+            # pass
 
         if "test_regression_model" in active_steps:
 
