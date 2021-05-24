@@ -56,7 +56,7 @@ def go(args):
     logger.info(f"Uploading {args.artifact_name} to Weights & Biases")
     
 
-    artifact.add_dir(os.path.join("data", args.sample))
+    artifact.add_file(os.path.join("data", args.sample))
     run.log_artifact(artifact)
 
 
