@@ -12,12 +12,11 @@ import json
 
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
-
+import tempfile
 import wandb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.pipeline import Pipeline
-import tempfile
 
 
 
@@ -139,23 +138,11 @@ def go(args):
     # HERE
 
     with tempfile.TemporaryDirectory() as tmp_dir:
-        export_path = os.path.join(tmp_dir, args.output_artifact)
+        random_forest_dir = os.path.join(tmp_dir, "model_export")
         mlflow.sklearn.save_model(
             sk_pipe,
-            export_path
+            random_forest_dir
     )
-
-     # with tempfile.TemporaryDirectory() as temp_dir:
-
-     #    export_path = os.path.join(temp_dir, "model_export")
-
-     #    mlflow.sklearn.save_model(
-     #        pipe,
-     #        export_path,
-     #        serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
-     #        signature=signature,
-     #        input_example=X_val.iloc[:2],
-     #    )
 
     ##################
 
@@ -166,7 +153,7 @@ def go(args):
         description="Export of the RandomForest in the MLFlow sklearn format",
         metadata=rf_config,
     )
-    artifact.add_dir(args.output_artifact + '/')
+    artifact.add_dir("random_forest_dir")
     wandb.log_artifact(artifact)
 
     logger.info("Uploading plots to W&B")
